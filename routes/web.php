@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StudentController;
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\MahasiswaController;
+use App\Http\Controllers\LoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,11 +16,22 @@ use App\Http\Controllers\AuthController;
 |
 */
 
-Route::get('/login', [AuthController::class, 'index'])->name('auth.login');
-
 Route::get('/', function () {
-    return redirect(route('auth.login'));
+    return redirect(route('login'));
 });
+Route::get('/login', [LoginController::class, 'index'])->name('login');
+Route::post('/postlogin', [LoginController::class, 'postlogin'])->name('postlogin');
+
+Route::get('/register', [LoginController::class, 'regis'])->name('register');
+Route::post('/store', [LoginController::class, 'store'])->name('authregister');
+
+Route::get('/logout', [LoginController::class, 'logout'])->name('auth.logout');
 
 
-Route::resource('/student', StudentController::class);
+
+
+
+Route::resource('/student', StudentController::class)->middleware('auth');
+Route::resource('/mahasiswa', MahasiswaController::class)->middleware('auth');
+Route::get('/studentexport', [StudentController::class, 'exportstudent']);
+Route::get('/mahasiswaexport', [MahasiswaController::class, 'exportmahasiswa']);
